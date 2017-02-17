@@ -8,6 +8,8 @@ Inspired by the **Exercism** task [Nth Prime in Elixir](http://exercism.io/exerc
 
 `lib\sieve_of_eratosthenes_array.ex` - contains implementation of Sieve Of Eratosthenes primes search algorithm utilizing **Erlang** [array](http://erlang.org/doc/man/array.html#set-3) as a data container.
 
+`test\test_data` - contains 3 lists of primes from [The first fifty million primes](http://primes.utm.edu/lists/small/millions/)
+
 ## Description
 
 To get the list of the prime numbers up to the given Upper Limit use:
