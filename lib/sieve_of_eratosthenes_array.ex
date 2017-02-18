@@ -1,6 +1,14 @@
 defmodule Primes.SieveOfEratosthenes.Array do
   @moduledoc """
-  Returns the list of the prime numbers up to the given Upper Limit
+  Implement Sieve of Eratosthenes algorithm for finding all prime numbers up to any given limit.
+  Uses Erlang array to store the list of numbers.
+  """
+
+  import Integer, only: [is_even: 1]
+
+  @doc """
+  Returns the list of the prime numbers up to the given limit.
+  Limit must be integer larger than 1.
 
   ## Examples
 
@@ -8,63 +16,70 @@ defmodule Primes.SieveOfEratosthenes.Array do
      [2, 3, 5, 7]
 
   """
-
-  import Integer, only: [is_even: 1]
-
   @spec get_primes_list(pos_integer) :: [pos_integer]
-  def get_primes_list(upper_limit) when upper_limit > 1 do
-    numbers_array = :array.new(size: upper_limit + 1, fixed: true, default: true)
-    numbers_array = :array.set(0, false, numbers_array)
-    numbers_array = :array.set(1, false, numbers_array)
-    numbers_array = :array.set(2, true, numbers_array)
+  def get_primes_list(limit) when limit > 1 do
+    integers_array = :array.new(size: limit + 1, fixed: true, default: true)
+    integers_array = :array.set(0, false, integers_array)
+    integers_array = :array.set(1, false, integers_array)
+    integers_array = :array.set(2, true, integers_array)
 
-    sieve(numbers_array, 3, upper_limit)
+    sieve(integers_array, 3, limit)
   end
 
-  # skip even numbers
-  defp sieve(numbers_array, next_number, upper_limit) when is_even(next_number), do:
-    sieve(numbers_array, next_number + 1, upper_limit)
 
-  # upper limit reached, search array for non deleted numbers which are prime numbers
-  defp sieve(numbers_array, next_number, upper_limit) when next_number * next_number > upper_limit, do:
-    extract_primes(numbers_array, 2, upper_limit, [2])
+  # Sieving
+  # skip even number, go to the next one
+  defp sieve(integers_array, next_int, limit) when is_even(next_int), do:
+    sieve(integers_array, next_int + 1, limit)
 
- # regular algorithm step, if next_number from array is not deleted, than it's prime
-  defp sieve(numbers_array, next_number, upper_limit) do
-    updated_numbers_array =
-      if :array.get(next_number, numbers_array) == true do
-        deletion(numbers_array, next_number * next_number, 2 * next_number, upper_limit)
+  # upper limit reached, get all non marked integers from array which are primes
+  defp sieve(integers_array, next_int, limit) when next_int * next_int > limit, do:
+    get_primes(integers_array, 3, limit, [2])
+
+ # iterative algorithm step: if next_number from array is not marked, than it's prime
+  defp sieve(integers_array, next_int, limit) do
+    updated_integers_array =
+      if :array.get(next_int, integers_array) == true do
+        mark_composites(integers_array, next_int * next_int, 2 * next_int, limit)
       else
-        numbers_array
+        integers_array
       end
 
-    sieve(updated_numbers_array, next_number + 1, upper_limit)
+    sieve(updated_integers_array, next_int + 1, limit)
   end
 
-  # skip even numbers
-  defp deletion(numbers_array, next, step, upper_limit) when is_even(next), do:
-    deletion(numbers_array, next + step, step, upper_limit)
 
-  defp deletion(numbers_array, next, _, upper_limit) when next > upper_limit, do:
-    numbers_array
+  # Marking composite numbers (as false)
+  # skip even number, go to the next one
+  defp mark_composites(integers_array, next, step, limit) when is_even(next), do:
+    mark_composites(integers_array, next + step, step, limit)
 
-  defp deletion(numbers_array, next, step, upper_limit) do
-    updated_numbers_array = :array.set(next, false, numbers_array)
+  # all composite numbers marked, returns updated array
+  defp mark_composites(integers_array, next, _, limit) when next > limit, do:
+    integers_array
 
-    deletion(updated_numbers_array, next + step, step, upper_limit)
+  # iterative step: marking composite numbers (as false)
+  defp mark_composites(integers_array, next, step, limit) do
+    updated_integers_array = :array.set(next, false, integers_array)
+
+    mark_composites(updated_integers_array, next + step, step, limit)
   end
 
-  # skip even numbers
-  defp extract_primes(numbers_array, i, upper_limit, primes) when is_even(i), do:
-    extract_primes(numbers_array, i + 1, upper_limit, primes)
 
-  defp extract_primes(_, i, upper_limit, primes) when i > upper_limit, do:
+  # Get all non marked (true) integers into list of prime numbers
+  # skip even number, go to the next one
+  defp get_primes(integers_array, i, limit, primes) when is_even(i), do:
+    get_primes(integers_array, i + 1, limit, primes)
+
+  # end of array reached, return list of primes
+  defp get_primes(_, i, limit, primes) when i > limit, do:
     Enum.reverse(primes)
 
-  defp extract_primes(numbers_array, i, upper_limit, primes) do
+  # iterative step: put integer from an array into primes list if it's not marked as false
+  defp get_primes(integers_array, i, limit, primes) do
       new_primes =
-        if :array.get(i, numbers_array), do: [i | primes], else: primes
+        if :array.get(i, integers_array), do: [i | primes], else: primes
 
-      extract_primes(numbers_array, i + 1, upper_limit, new_primes)
+      get_primes(integers_array, i + 1, limit, new_primes)
   end
 end
