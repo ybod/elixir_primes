@@ -3,15 +3,29 @@ defmodule Primes.SieveOfEratosthenes.Array.Test do
   doctest Primes.SieveOfEratosthenes.Array
 
   setup_all _context do
-    max_prime_from_file = Application.get_env(:primes, :max_prime_from_file)
-    primes_from_file = Application.get_env(:primes, :primes_from_file)
+    million_primes_max = Application.get_env(:primes, :million_primes_max)
+    million_primes = Application.get_env(:primes, :million_primes)
 
-    primes_calculated = Primes.SieveOfEratosthenes.Array.get_primes_list(max_prime_from_file)
-    {:ok, primes_calculated: primes_calculated, primes_from_file: primes_from_file}
+    thousand_primes_max = Application.get_env(:primes, :thousand_primes_max)
+    thousand_primes = Application.get_env(:primes, :thousand_primes)
+
+    {:ok, million_primes_max: million_primes_max, million_primes: million_primes,
+      thousand_primes_max: thousand_primes_max, thousand_primes: thousand_primes}
   end
 
+  @tag timeout: 90_000
+  @tag :slow
+  test "First million of primes", %{million_primes_max: million_primes_max, million_primes: million_primes}
+  do
+    calculated_primes = Primes.SieveOfEratosthenes.Array.get_primes_list(million_primes_max)
 
-  test "First million of primes", %{primes_calculated: primes_calculated, primes_from_file: primes_from_file} do
-    assert primes_calculated == primes_from_file
+    assert(calculated_primes == million_primes)
+  end
+
+  test "First 1000 of primes", %{thousand_primes_max: thousand_primes_max, thousand_primes: thousand_primes}
+  do
+    calculated_primes = Primes.SieveOfEratosthenes.Array.get_primes_list(thousand_primes_max)
+
+    assert(calculated_primes == thousand_primes)
   end
 end
