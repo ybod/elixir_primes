@@ -26,7 +26,7 @@ defmodule Primes.SieveOfEratosthenes.Array do
     sieve(numbers_array, next_number + 1, upper_limit)
 
   # upper limit reached, search array for non deleted numbers which are prime numbers
-  defp sieve(numbers_array, next_number, upper_limit) when next_number > upper_limit, do:
+  defp sieve(numbers_array, next_number, upper_limit) when next_number * next_number > upper_limit, do:
     extract_primes(numbers_array, 2, upper_limit, [2])
 
  # regular algorithm step, if next_number from array is not deleted, than it's prime
