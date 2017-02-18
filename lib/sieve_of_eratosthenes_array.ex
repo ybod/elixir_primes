@@ -33,7 +33,7 @@ defmodule Primes.SieveOfEratosthenes.Array do
   defp sieve(numbers_array, next_number, upper_limit) do
     updated_numbers_array =
       if :array.get(next_number, numbers_array) == true do
-        deletion(numbers_array, next_number * next_number, next_number, upper_limit)
+        deletion(numbers_array, next_number * next_number, 2 * next_number, upper_limit)
       else
         numbers_array
       end
@@ -49,9 +49,9 @@ defmodule Primes.SieveOfEratosthenes.Array do
     numbers_array
 
   defp deletion(numbers_array, next, step, upper_limit) do
-      updated_numbers_array = :array.set(next, false, numbers_array)
+    updated_numbers_array = :array.set(next, false, numbers_array)
 
-      deletion(updated_numbers_array, next + step, step, upper_limit)
+    deletion(updated_numbers_array, next + step, step, upper_limit)
   end
 
   # skip even numbers
