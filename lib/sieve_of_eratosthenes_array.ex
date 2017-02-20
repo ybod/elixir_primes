@@ -1,7 +1,7 @@
 defmodule Primes.SieveOfEratosthenes.Array do
   @moduledoc """
   Implement Sieve of Eratosthenes algorithm for finding all prime numbers up to any given limit.
-  Uses Erlang array to store the list of numbers.
+  Uses Erlang array to store the list of integers for sieving.
   """
 
   import Integer, only: [is_even: 1]
