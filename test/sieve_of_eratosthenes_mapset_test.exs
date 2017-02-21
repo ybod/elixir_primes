@@ -19,19 +19,19 @@ defmodule Primes.SieveOfEratosthenes.MapSet.Test do
     assert(prime == [2])
   end
 
-  test "First 1000 of primes", %{thousand_primes_max: thousand_primes_max, thousand_primes: thousand_primes}
-  do
-    calculated_primes = Primes.SieveOfEratosthenes.MapSet.get_primes_list(thousand_primes_max)
+  # test "First 1000 of primes", %{thousand_primes_max: thousand_primes_max, thousand_primes: thousand_primes}
+  # do
+  #   calculated_primes = Primes.SieveOfEratosthenes.MapSet.get_primes_list(thousand_primes_max)
 
-    assert(calculated_primes == thousand_primes)
-  end
+  #   assert(calculated_primes == thousand_primes)
+  # end
 
-  @tag timeout: 90_000
-  @tag :slow
-  test "First million of primes", %{million_primes_max: million_primes_max, million_primes: million_primes}
-  do
-    calculated_primes = Primes.SieveOfEratosthenes.MapSet.get_primes_list(million_primes_max)
+  # @tag timeout: 90_000
+  # @tag :slow
+  # test "First million of primes", %{million_primes_max: million_primes_max, million_primes: million_primes}
+  # do
+  #   calculated_primes = Primes.SieveOfEratosthenes.MapSet.get_primes_list(million_primes_max)
 
-    assert(calculated_primes == million_primes)
-  end
+  #   assert(calculated_primes == million_primes)
+  # end
 end

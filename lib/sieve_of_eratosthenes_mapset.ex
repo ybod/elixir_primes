@@ -17,8 +17,10 @@ defmodule Primes.SieveOfEratosthenes.MapSet do
 
   """
   @spec get_primes_list(pos_integer) :: [pos_integer]
-  def get_primes_list(limit) when limit > 1 do
-    odd_integers = Enum.filter([3..limit], &is_odd/1)
+  def get_primes_list(limit) when limit == 2, do: [2]
+  
+  def get_primes_list(limit) when limit > 2 do
+    odd_integers = Enum.filter(3..limit, &is_odd/1)
     integers_set = MapSet.new([2 | odd_integers])
 
     sieve(integers_set, 3, limit)
