@@ -63,7 +63,7 @@ defmodule Primes.SieveOfEratosthenes.Array do
   defp mark_even(array) do
     :array.map(fn(i, _val) -> 
                  if is_even(i), do: false, else: true 
-               end, array)   
+               end, array)
   end
 
 
