@@ -18,68 +18,60 @@ defmodule Primes.SieveOfEratosthenes.Array do
   """
   @spec get_primes_list(pos_integer) :: [pos_integer]
   def get_primes_list(limit) when limit > 1 do
-    integers_array = :array.new(size: limit + 1, fixed: true, default: true)
-    integers_array = :array.set(0, false, integers_array)
-    integers_array = :array.set(1, false, integers_array)
-    integers_array = :array.set(2, true, integers_array)
-
-    sieve(integers_array, 3, limit)
+    get_initial_array(limit)
+    |> sieve(3, limit)
   end
 
 
-  # Sieving
-  # skip even number, go to the next one
-  defp sieve(integers_array, next_int, limit) when is_even(next_int), do:
-    sieve(integers_array, next_int + 1, limit)
-
-  # upper limit reached, get all non marked integers from array which are primes
-  defp sieve(integers_array, next_int, limit) when next_int * next_int > limit, do:
-    get_primes(integers_array, 3, limit, [2])
-
- # iterative algorithm step: if next_number from array is not marked, than it's prime
-  defp sieve(integers_array, next_int, limit) do
+  # Sieving: limit reached, scan array to retrieve primes
+  defp sieve(integers_array, next, limit) when next * next > limit, do: get_primes(integers_array)
+    
+  # Sieving: check if the next array item that corresponds to a number is true (prime),
+  # if it is - than mark all composites for this prime as false
+  defp sieve(integers_array, next, limit) do
     updated_integers_array =
-      if :array.get(next_int, integers_array) == true do
-        mark_composites(integers_array, next_int * next_int, 2 * next_int, limit)
+      if :array.get(next, integers_array) == true do
+        mark_composites(integers_array, next * next, 2 * next, limit)
       else
         integers_array
       end
 
-    sieve(updated_integers_array, next_int + 1, limit)
+    sieve(updated_integers_array, next + 1, limit)
   end
 
 
   # Marking composite numbers (as false)
-  # skip even number, go to the next one
-  defp mark_composites(integers_array, next, step, limit) when is_even(next), do:
-    mark_composites(integers_array, next + step, step, limit)
+  defp mark_composites(array, next, _, limit) when next > limit, do: array
 
-  # all composite numbers marked, returns updated array
-  defp mark_composites(integers_array, next, _, limit) when next > limit, do:
-    integers_array
-
-  # iterative step: marking composite numbers (as false)
-  defp mark_composites(integers_array, next, step, limit) do
-    updated_integers_array = :array.set(next, false, integers_array)
-
-    mark_composites(updated_integers_array, next + step, step, limit)
+  defp mark_composites(array, next, step, limit) do
+    array = :array.set(next, false, array)
+    mark_composites(array, next + step, step, limit)
   end
 
+  # Initial array of all integers to sieve
+  defp get_initial_array(limit) do
+    array = :array.new(size: limit + 1, fixed: true, default: true)
+    array = :array.set(0, false, array)
+    array = :array.set(1, false, array)
+    array = :array.set(2, true, array)
+    array = mark_even(array, 4, limit)
+    
+    array
+  end
 
-  # Get all non marked (true) integers into list of prime numbers
-  # skip even number, go to the next one
-  defp get_primes(integers_array, i, limit, primes) when is_even(i), do:
-    get_primes(integers_array, i + 1, limit, primes)
+  # Marking even integers as false
+  defp mark_even(array, next, limit) when next > limit, do: array
+  
+  defp mark_even(array, next, limit) when is_even(next) do
+    array = :array.set(next, false, array)
+    mark_even(array, next + 2, limit)
+  end
 
-  # end of array reached, return list of primes
-  defp get_primes(_, i, limit, primes) when i > limit, do:
-    Enum.reverse(primes)
-
-  # iterative step: put integer from an array into primes list if it's not marked as false
-  defp get_primes(integers_array, i, limit, primes) do
-      new_primes =
-        if :array.get(i, integers_array), do: [i | primes], else: primes
-
-      get_primes(integers_array, i + 1, limit, new_primes)
+  # Get prime numbers (true) from array
+  defp get_primes(array) do
+    :array.foldr(
+      fn (i, val, acc) -> 
+        if val == true, do: [i | acc], else: acc
+      end, [], array)
   end
 end
