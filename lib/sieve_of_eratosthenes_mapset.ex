@@ -28,14 +28,21 @@ defmodule Primes.SieveOfEratosthenes.MapSet do
 
   # Sieving
   # upper limit reached, get all primes that are left in the set as list
-  defp sieve(integers_set, next_int, limit) when next_int * next_int > limit, do:
+  defp sieve(integers_set, next_int, limit) when next_int * next_int > limit do
     MapSet.to_list(integers_set)
+    |> Enum.sort()
+  end
 
- # iterative algorithm step: if next_number from array is not marked, than it's prime
+ # iterative algorithm step: remove all numbers that are composites to the current 
+ # integer if the current integer is present in set
   defp sieve(integers_set, next_int, limit) do
     updated_integers_set =
       if MapSet.member?(integers_set, next_int) do
-        remove_composites(integers_set, next_int * next_int, 2 * next_int, limit, [])
+        composites = 
+          get_composites(next_int * next_int, 2 * next_int, limit)
+          |> MapSet.new()
+        
+        MapSet.difference(integers_set, composites)
       else
         integers_set
       end
@@ -43,10 +50,7 @@ defmodule Primes.SieveOfEratosthenes.MapSet do
     sieve(updated_integers_set, next_int + 1, limit)
   end
 
-
-  # Marking composite numbers (as false)
-  defp remove_composites(integers_set, next, step, limit, composites) when next > limit do
-    composites_set = MapSet.new(composites)
-    MapSet.difference(integers_set, composites_set)
+  defp get_composites(number, step, limit) do
+    :lists.seq(number, limit, step)
   end
 end
