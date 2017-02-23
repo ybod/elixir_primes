@@ -6,7 +6,10 @@ Inspired by the **Exercism** task [Nth Prime in Elixir](http://exercism.io/exerc
 
 ## Implementation Details
 
-`lib/sieve_of_eratosthenes_array.ex` - contains implementation of Sieve Of Eratosthenes primes search algorithm utilizing **Erlang** [array](http://erlang.org/doc/man/array.html#set-3) as a data container.
+`lib` folder contains implementation of Sieve Of Eratosthenes primes search algorithm utilizing different data structures:
+
+* `sieve_of_eratosthenes_array.ex`: [Erlang array](http://erlang.org/doc/man/array.html#set-3)
+* `sieve_of_eratosthenes_mapset.ex`: [Elixir MapSet](https://hexdocs.pm/elixir/MapSet.html#content)
 
 ## Description
 
@@ -14,6 +17,16 @@ To get the list of the prime numbers up to the given Upper Limit use:
 ```
 iex> Primes.SieveOfEratosthenes.Array.get_primes_list(10)
 [2, 3, 5, 7]
+
+iex> Primes.SieveOfEratosthenes.MapSet.get_primes_list(10)
+[2, 3, 5, 7]
+```
+
+## Algorithms comparison
+
+You can compare different implementations of algorith by editing and executing `try_me.exs`:
+```
+mix run try_me.exs
 ```
 
 ## Testing
