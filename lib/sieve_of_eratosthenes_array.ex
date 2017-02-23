@@ -31,7 +31,7 @@ defmodule Primes.SieveOfEratosthenes.Array do
   defp sieve(integers_array, next, limit) do
     updated_integers_array =
       if :array.get(next, integers_array) == true do
-        mark_composites(integers_array, next * next, 2 * next, limit)
+        mark_composite(integers_array, next * next, 2 * next, limit)
       else
         integers_array
       end
@@ -41,37 +41,36 @@ defmodule Primes.SieveOfEratosthenes.Array do
 
 
   # Marking composite numbers (as false)
-  defp mark_composites(array, next, _, limit) when next > limit, do: array
+  defp mark_composite(array, next, _, limit) when next > limit, do: array
 
-  defp mark_composites(array, next, step, limit) do
+  defp mark_composite(array, next, step, limit) do
     array = :array.set(next, false, array)
-    mark_composites(array, next + step, step, limit)
+    mark_composite(array, next + step, step, limit)
   end
+
 
   # Initial array of all integers to sieve
   defp get_initial_array(limit) do
-    array = :array.new(size: limit + 1, fixed: true, default: true)
-    array = :array.set(0, false, array)
+    array = :array.new(size: limit + 1, fixed: true, default: false)
+    array = mark_even(array)
     array = :array.set(1, false, array)
     array = :array.set(2, true, array)
-    array = mark_even(array, 4, limit)
-    
+        
     array
   end
 
-  # Marking even integers as false
-  defp mark_even(array, next, limit) when next > limit, do: array
-  
-  defp mark_even(array, next, limit) when is_even(next) do
-    array = :array.set(next, false, array)
-    mark_even(array, next + 2, limit)
+  # Marking even integers as false, and prime candidates as true
+  defp mark_even(array) do
+    :array.map(fn(i, _val) -> 
+                 if is_even(i), do: false, else: true 
+               end, array)   
   end
+
 
   # Get prime numbers (true) from array
   defp get_primes(array) do
-    :array.foldr(
-      fn (i, val, acc) -> 
-        if val == true, do: [i | acc], else: acc
-      end, [], array)
+    :array.sparse_foldr(fn(i, _val, acc) -> 
+                          [i | acc] 
+                        end, [], array)
   end
 end

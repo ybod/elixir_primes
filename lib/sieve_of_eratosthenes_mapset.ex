@@ -38,7 +38,7 @@ defmodule Primes.SieveOfEratosthenes.MapSet do
     new_integers_set =
       if MapSet.member?(integers_set, next) do
         composites = 
-          get_composites(next * next, 2 * next, limit)
+          get_composite(next * next, 2 * next, limit)
           |> MapSet.new()
         
         MapSet.difference(integers_set, composites)
@@ -51,5 +51,5 @@ defmodule Primes.SieveOfEratosthenes.MapSet do
 
   defp get_odd_integers(first, limit) when is_odd(first), do: :lists.seq(first, limit, 2)
   
-  defp get_composites(number, step, limit), do: :lists.seq(number, limit, step)
+  defp get_composite(number, step, limit), do: :lists.seq(number, limit, step)
 end
