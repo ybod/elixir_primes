@@ -12,3 +12,8 @@ IO.puts("Sieve Of Eratosthenes: Elixir MapSet")
 {time, mapset_result} = Timer.run(Primes.SieveOfEratosthenes.MapSet, :get_primes_list, [max_prime])
 IO.puts("Time: #{time} sec.")
 IO.inspect(mapset_result)
+
+IO.puts("Sieve Of Eratosthenes: Elixir List")
+{time, list_result} = Timer.run(Primes.SieveOfEratosthenes.List, :get_primes_list, [max_prime])
+IO.puts("Time: #{time} sec.")
+IO.inspect(list_result)
