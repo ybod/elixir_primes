@@ -4,7 +4,7 @@ defmodule Primes.SieveOfEratosthenes.Array do
   Uses Erlang array to store the list of integers for sieving.
   """
 
-  import Integer, only: [is_even: 1]
+  import Integer, only: [is_odd: 1]
 
   @doc """
   Returns the list of the prime numbers up to the given limit.
@@ -25,7 +25,7 @@ defmodule Primes.SieveOfEratosthenes.Array do
 
   # Sieving: limit reached, scan array to retrieve primes
   defp sieve(integers_array, next, limit) when next * next > limit, do: get_primes(integers_array)
-    
+
   # Sieving: check if the next array item that corresponds to a number is true (prime),
   # if it is - than mark all composites for this prime as false
   defp sieve(integers_array, next, limit) do
@@ -52,25 +52,21 @@ defmodule Primes.SieveOfEratosthenes.Array do
   # Initial array of all integers to sieve
   defp get_initial_array(limit) do
     array = :array.new(size: limit + 1, fixed: true, default: false)
-    array = mark_even(array)
+    array = mark_numbers(array)
     array = :array.set(1, false, array)
     array = :array.set(2, true, array)
-        
+
     array
   end
 
-  # Marking even integers as false, and prime candidates as true
-  defp mark_even(array) do
-    :array.map(fn(i, _val) -> 
-                 if is_even(i), do: false, else: true 
-               end, array)
+  # Marking even numbers as false, and potential primes (odds) as true
+  defp mark_numbers(array) do
+    :array.map(fn(i, _val) -> is_odd(i) end, array)
   end
 
 
   # Get prime numbers (true) from array
   defp get_primes(array) do
-    :array.sparse_foldr(fn(i, _val, acc) -> 
-                          [i | acc] 
-                        end, [], array)
+    :array.sparse_foldr(fn(i, _val, acc) -> [i | acc] end, [], array)
   end
 end
