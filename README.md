@@ -8,8 +8,10 @@ Inspired by the **Exercism** task [Nth Prime in Elixir](http://exercism.io/exerc
 
 `lib` folder contains implementation of Sieve Of Eratosthenes primes search algorithm utilizing different data structures:
 
-* `sieve_of_eratosthenes_array.ex`: [Erlang array](http://erlang.org/doc/man/array.html#set-3)
+* `sieve_of_eratosthenes_array.ex`: [Erlang array](http://erlang.org/doc/man/array.html)
+* `sieve_of_eratosthenes_ets.ex` [Erlang ETS](http://erlang.org/doc/man/ets.html)
 * `sieve_of_eratosthenes_mapset.ex`: [Elixir MapSet](https://hexdocs.pm/elixir/MapSet.html#content)
+
 
 ## Description
 
