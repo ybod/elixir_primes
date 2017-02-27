@@ -4,7 +4,7 @@ defmodule Primes.SieveOfEratosthenes.List do
   Uses MapSet to store the list of integers for sieving.
   """
 
-  import Integer, only: [is_odd: 1]
+  alias Primes.Helper.Sequence
 
   @doc """
   Returns the list of the prime numbers up to the given limit.
@@ -20,7 +20,7 @@ defmodule Primes.SieveOfEratosthenes.List do
   def get_primes_list(limit) when limit == 2, do: [2]
 
   def get_primes_list(limit) when limit > 2 do
-    get_odd_integers(3, limit)
+    Sequence.get_odd(3, limit)
     |> sieve(limit, [2])
   end
 
@@ -31,13 +31,8 @@ defmodule Primes.SieveOfEratosthenes.List do
   # Sieving: check if the next prime candidate integer is in set,
   # if it is - than remove all composites for this prime
   defp sieve([h | t], limit, primes_list) do
-    new_integers_list = t -- get_composite(h * h, 2 * h, limit)
+    new_integers_list = t --  Sequence.get(h * h, limit, 2 * h)   # remove composite numbers for the current prime (h) from the rest of the list (t)
 
     sieve(new_integers_list, limit, [h | primes_list])
   end
-
-  defp get_odd_integers(first, limit) when is_odd(first), do: :lists.seq(first, limit, 2)
-
-  defp get_composite(number, step, limit) when number + step > limit, do: [number]
-  defp get_composite(number, step, limit), do: :lists.seq(number, limit, step)
 end

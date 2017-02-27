@@ -30,8 +30,8 @@ defmodule Primes.SieveOfEratosthenes.List.Test do
   # @tag :slow
   # test "First million of primes", %{million_primes_max: million_primes_max, million_primes: million_primes}
   # do
-  #   calculated_primes = Primes.SieveOfEratosthenes.MapSet.get_primes_list(million_primes_max)
-
+  #   calculated_primes = Primes.SieveOfEratosthenes.List.get_primes_list(million_primes_max)
+  #
   #   assert(calculated_primes == million_primes)
   # end
 end
