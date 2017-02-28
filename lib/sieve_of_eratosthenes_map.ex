@@ -1,14 +1,15 @@
 defmodule Primes.SieveOfEratosthenes.Map do
   @moduledoc """
-  Implement Sieve of Eratosthenes algorithm for finding all prime numbers up to any given limit.
-  Uses MapSet to store the list of integers for sieving.
+  Implements Sieve of Eratosthenes algorithm for finding all prime numbers up to the given limit.
+  Uses Elixir Map to store the list of odd integers for sieving.
   """
 
+  import Integer, only: [is_even: 1]
   alias Primes.Helper.Sequence
 
   @doc """
   Returns the list of the prime numbers up to the given limit.
-  Limit must be integer larger than 1.
+  Limit must be integer and larger than 1.
 
   ## Examples
 
@@ -21,33 +22,38 @@ defmodule Primes.SieveOfEratosthenes.Map do
 
   def get_primes_list(limit) when limit > 2 do
     odds = Sequence.get_odd(3, limit)
-    map = Map.new(odds, &{&1, true})
+    map = Map.new(odds, &{&1, :prime})
 
     sieve(odds, map, limit)
   end
 
-  defp sieve([], map, _), do: get_primes(map)
+  # Sieving: all primes already found, no need to look furhter
   defp sieve([h | _], map, limit) when h * h > limit, do: get_primes(map)
 
+  # Sieving: skip any even number, because it can't be prime (besides 2)
+  defp sieve([h | t], map, limit) when is_even(h), do: sieve(t, map, limit)
+
+  # Check if the next odd number can be found as a Map key.
+  # If found - it's a prime number and we need to remove all multiples of this prime from Map.
   defp sieve([h | t], map, limit) do
     new_map =
-      if Map.get(map, h, false), do: mark_composites(h, map, limit), else: map
+      if Map.has_key?(map, h), do: delete_composite(h, map, limit), else: map
 
     sieve(t, new_map, limit)
   end
 
+
   defp get_primes(map) do
-      Enum.reduce(map, [2], fn({num, is_prime}, acc) ->
-        if is_prime, do: [num | acc], else: acc
-      end)
+    primes =
+      Map.keys(map)
       |> Enum.sort()
+
+    [2 | primes]
   end
 
-  defp mark_composites(first, map, limit) do
-    composite_map =
-      Sequence.get(first * first, limit, 2 * first)
-      |> Map.new(&{&1, false})
 
-    Map.merge(map, composite_map)
+  defp delete_composite(first, map, limit) do
+    composite_nums = Sequence.get(first * first, limit, 2 * first)
+    Map.drop(map, composite_nums)
   end
 end
