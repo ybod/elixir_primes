@@ -4,7 +4,6 @@ defmodule Primes.SieveOfEratosthenes.Map do
   Uses Elixir Map to store the list of odd integers for sieving.
   """
 
-  import Integer, only: [is_even: 1]
   alias Primes.Helper.Sequence
 
   @doc """
@@ -15,7 +14,6 @@ defmodule Primes.SieveOfEratosthenes.Map do
 
      iex> Primes.SieveOfEratosthenes.Map.get_primes_list(10)
      [2, 3, 5, 7]
-
   """
   @spec get_primes_list(pos_integer) :: [pos_integer]
   def get_primes_list(limit) when limit == 2, do: [2]
@@ -29,9 +27,6 @@ defmodule Primes.SieveOfEratosthenes.Map do
 
   # Sieving: all primes already found, no need to look furhter
   defp sieve([h | _], map, limit) when h * h > limit, do: get_primes(map)
-
-  # Sieving: skip any even number, because it can't be prime (besides 2)
-  defp sieve([h | t], map, limit) when is_even(h), do: sieve(t, map, limit)
 
   # Check if the next odd number can be found as a Map key.
   # If found - it's a prime number and we need to remove all multiples of this prime from Map.
