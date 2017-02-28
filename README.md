@@ -10,8 +10,8 @@ Inspired by the **Exercism** task [Nth Prime in Elixir](http://exercism.io/exerc
 
 * `sieve_of_eratosthenes_array.ex`: [Erlang array](http://erlang.org/doc/man/array.html)
 * `sieve_of_eratosthenes_ets.ex` [Erlang ETS](http://erlang.org/doc/man/ets.html)
+* `sieve_of_eratosthenes_map.ex`: [Elixir Map](https://hexdocs.pm/elixir/Map.html#content)
 * `sieve_of_eratosthenes_mapset.ex`: [Elixir MapSet](https://hexdocs.pm/elixir/MapSet.html#content)
-
 
 ## Description
 

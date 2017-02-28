@@ -1,4 +1,4 @@
-defmodule Primes.SieveOfEratosthenes.Maps do
+defmodule Primes.SieveOfEratosthenes.Map do
   @moduledoc """
   Implement Sieve of Eratosthenes algorithm for finding all prime numbers up to any given limit.
   Uses MapSet to store the list of integers for sieving.
@@ -12,7 +12,7 @@ defmodule Primes.SieveOfEratosthenes.Maps do
 
   ## Examples
 
-     iex> Primes.SieveOfEratosthenes.List.get_primes_list(10)
+     iex> Primes.SieveOfEratosthenes.Map.get_primes_list(10)
      [2, 3, 5, 7]
 
   """
@@ -27,18 +27,27 @@ defmodule Primes.SieveOfEratosthenes.Maps do
   end
 
   defp sieve([], map, _), do: get_primes(map)
-  defp sieve([h | t], map, limit) when h * h > limit, do: get_primes(map)
+  defp sieve([h | _], map, limit) when h * h > limit, do: get_primes(map)
 
   defp sieve([h | t], map, limit) do
-    if Map.get(map, h, false), do: mark_composites(h, map, limit)
+    new_map =
+      if Map.get(map, h, false), do: mark_composites(h, map, limit), else: map
 
-    sieve(t, map, limit)
+    sieve(t, new_map, limit)
   end
 
   defp get_primes(map) do
-    primes = Enum.reduce(map, [], fn({num,is_prime}, acc) ->
+      Enum.reduce(map, [2], fn({num, is_prime}, acc) ->
         if is_prime, do: [num | acc], else: acc
       end)
+      |> Enum.sort()
+  end
 
+  defp mark_composites(first, map, limit) do
+    composite_map =
+      Sequence.get(first * first, limit, 2 * first)
+      |> Map.new(&{&1, false})
+
+    Map.merge(map, composite_map)
   end
 end
