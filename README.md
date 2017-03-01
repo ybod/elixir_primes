@@ -13,6 +13,7 @@ Inspired by the **Exercism** task [Nth Prime in Elixir](http://exercism.io/exerc
 `lib` folder contains implementation of Sieve Of Eratosthenes primes search algorithm utilizing different data structures:
 
 * `sieve_of_eratosthenes_array.ex` [Erlang array](http://erlang.org/doc/man/array.html)
+> This implementation creates an array of the size *limit + 1* elements. Array index corresponds to a number we are checking, all elements with even indexes, besides *2*, are preset to *false*. Then odd indexes processed sequentially starting from 3, the first odd prime, and for each index with *true* element in array its multiples (composite numbers) are marked as *false*. On the final step we get an indexes of the *true* elements of array as a list of prime numbers.
 
 * `sieve_of_eratosthenes_ets.ex` [Erlang ETS](http://erlang.org/doc/man/ets.html)
 > This implementation inserts the sequence of odd integers into ETS as list of K/V pairs: [{3, :prime}, {5, :prime}, {7, :prime}, {9, :prime} ...]. Then odd numbers processed sequentially starting from 3, the first odd prime, and for each prime its multiples (composite numbers) removed from the ETS. On the final step we form a list of all ETS keys and return them as a list of a prime numbers.

@@ -1,47 +1,46 @@
 defmodule Primes.SieveOfEratosthenes.Array do
   @moduledoc """
-  Implement Sieve of Eratosthenes algorithm for finding all prime numbers up to any given limit.
-  Uses Erlang array to store the list of integers for sieving.
+  Implements Sieve of Eratosthenes algorithm for finding all prime numbers up to the given limit.
+  Uses Erlang Array to store the list of integers for sieving.
   """
 
   import Integer, only: [is_odd: 1]
 
   @doc """
-  Returns the list of the prime numbers up to the given limit.
-  Limit must be integer larger than 1.
-
+  Returns the list of the prime numbers up to the given limit. Limit must be integer and larger than 1.
   ## Examples
 
      iex> Primes.SieveOfEratosthenes.Array.get_primes_list(10)
      [2, 3, 5, 7]
-
   """
   @spec get_primes_list(pos_integer) :: [pos_integer]
   def get_primes_list(limit) when limit > 1 do
-    get_initial_array(limit)
+    get_array(limit)
     |> sieve(3, limit)
   end
 
 
-  # Sieving: limit reached, scan array to retrieve primes
-  defp sieve(integers_array, next, limit) when next * next > limit, do: get_primes(integers_array)
+  # Sieving: all primes already found, no need to look furhter
+  defp sieve(array, odd, limit) when odd * odd > limit do
+    :array.sparse_foldr(fn(i, _val, acc) -> [i | acc] end, [], array)
+  end
 
-  # Sieving: check if the next array item that corresponds to a number is true (prime),
-  # if it is - than mark all composites for this prime as false
-  defp sieve(integers_array, next, limit) do
-    updated_integers_array =
-      if :array.get(next, integers_array) == true do
-        mark_composite(integers_array, next * next, 2 * next, limit)
+  # Check if the next odd number (array element index) corresponds to the true element inside array.
+  # If true - it's a prime number and we need to mark all multiples of this prime as false in array.
+  defp sieve(array, odd, limit) do
+    new_array =
+      if :array.get(odd, array) == true do
+        mark_composite(array, odd * odd, 2 * odd, limit)
       else
-        integers_array
+        array
       end
 
-    sieve(updated_integers_array, next + 1, limit)
+    sieve(new_array, odd + 2, limit)
   end
 
 
   # Marking composite numbers (as false)
-  defp mark_composite(array, next, _, limit) when next > limit, do: array
+  defp mark_composite(array, next, step, limit) when next > limit, do: array
 
   defp mark_composite(array, next, step, limit) do
     array = :array.set(next, false, array)
@@ -49,24 +48,13 @@ defmodule Primes.SieveOfEratosthenes.Array do
   end
 
 
-  # Initial array of all integers to sieve
-  defp get_initial_array(limit) do
+  # Array initialization
+  defp get_array(limit) do
     array = :array.new(size: limit + 1, fixed: true, default: false)
-    array = mark_numbers(array)
+    array = :array.map(fn(i, _val) -> is_odd(i) end, array)
     array = :array.set(1, false, array)
     array = :array.set(2, true, array)
 
     array
-  end
-
-  # Marking even numbers as false, and potential primes (odds) as true
-  defp mark_numbers(array) do
-    :array.map(fn(i, _val) -> is_odd(i) end, array)
-  end
-
-
-  # Get prime numbers (true) from array
-  defp get_primes(array) do
-    :array.sparse_foldr(fn(i, _val, acc) -> [i | acc] end, [], array)
   end
 end
