@@ -32,7 +32,8 @@ defmodule Primes.SieveOfEratosthenes.MapSet do
   # Check if the next odd number can be found is the Set.
   # If found - it's a prime number and we need to remove all multiples of this prime from Set.
   defp sieve(set, odd_num, limit) do
-    new_set = if MapSet.member?(set, odd_num), do: delete_composites(odd_num, set, limit), else: set
+    new_set =
+      if MapSet.member?(set, odd_num), do: delete_composites(odd_num, set, limit), else: set
 
     sieve(new_set, odd_num + 2, limit)
   end

@@ -35,15 +35,17 @@ defmodule Primes.SieveOfEratosthenes.Ets do
   # Check if the next odd number can be found as an ETS key.
   # If found - it's a prime number and we need to remove all multiples of this prime from ETS.
   defp sieve(ets, odd_num, limit) do
-    if :ets.member(ets, odd_num), do: delete_composite(ets, odd_num, limit)
+    if :ets.member(ets, odd_num), do: delete_composite(ets, odd_num * odd_num, 2 * odd_num, limit)
 
     sieve(ets, odd_num + 2, limit)
   end
 
 
-  defp delete_composite(ets, num, limit) do
-    Sequence.get(num * num, limit, 2 * num)
-    |> Enum.each(fn n -> true = :ets.delete(ets, n) end)
+  defp delete_composite(ets, next, step, limit) do
+    :ets.delete(ets, next)
+
+    next_step = next + step
+    if next_step <= limit, do: delete_composite(ets, next_step, step, limit)
   end
 
 
