@@ -1,6 +1,6 @@
 defmodule Primes.SieveOfEratosthenes.MapSet.Test do
   use ExUnit.Case, async: true
-  doctest Primes.SieveOfEratosthenes.Array
+  doctest Primes.SieveOfEratosthenes.MapSet
 
   setup_all _context do
     million_primes_max = Application.get_env(:primes, :million_primes_max)
