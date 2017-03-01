@@ -30,10 +30,10 @@ IO.puts("\nSieve Of Eratosthenes: Erlang ETS")
 IO.puts("Time: #{time} sec.")
 IO.inspect(est_result)
 
-# IO.puts("\nSieve Of Eratosthenes: Elixir Map")
-# {time, map_result} = Timer.run(Primes.SieveOfEratosthenes.Map, :get_primes_list, [max_prime])
-# IO.puts("Time: #{time} sec.")
-# IO.inspect(map_result)
+IO.puts("\nSieve Of Eratosthenes: Elixir Map")
+{time, map_result} = Timer.run(Primes.SieveOfEratosthenes.Map, :get_primes_list, [max_prime])
+IO.puts("Time: #{time} sec.")
+IO.inspect(map_result)
 
 
 #results = array_result == mapset_result and mapset_result == est_result and est_result == map_result

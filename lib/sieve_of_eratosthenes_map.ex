@@ -18,22 +18,23 @@ defmodule Primes.SieveOfEratosthenes.Map do
   def get_primes_list(limit) when limit == 2, do: [2]
 
   def get_primes_list(limit) when limit > 2 do
-    odds = Sequence.get_odd(3, limit)
-    map = Map.new(odds, &{&1, :prime})
+    map =
+      Sequence.get_odd(3, limit)
+      |> Map.new(&{&1, :prime})
 
-    sieve(odds, map, limit)
+    sieve(map, 3, limit)
   end
 
   # Sieving: all primes already found, no need to look furhter
-  defp sieve([h | _], map, limit) when h * h > limit, do: get_primes(map)
+  defp sieve(map, odd_num, limit) when odd_num * odd_num > limit, do: get_primes(map)
 
   # Check if the next odd number can be found as a Map key.
   # If found - it's a prime number and we need to remove all multiples of this prime from Map.
-  defp sieve([h | t], map, limit) do
+  defp sieve(map, odd_num, limit) do
     new_map =
-      if Map.has_key?(map, h), do: delete_composite(h, map, limit), else: map
+      if Map.has_key?(map, odd_num), do: delete_composite(odd_num, map, limit), else: map
 
-    sieve(t, new_map, limit)
+    sieve(new_map, odd_num + 2, limit)
   end
 
 
