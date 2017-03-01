@@ -7,8 +7,7 @@ defmodule Primes.SieveOfEratosthenes.Map do
   alias Primes.Helper.Sequence
 
   @doc """
-  Returns the list of the prime numbers up to the given limit.
-  Limit must be integer and larger than 1.
+  Returns the list of the prime numbers up to the given limit. Limit must be integer and larger than 1.
 
   ## Examples
 

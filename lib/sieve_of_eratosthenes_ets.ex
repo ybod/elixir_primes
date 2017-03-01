@@ -1,13 +1,13 @@
 defmodule Primes.SieveOfEratosthenes.Ets do
   @moduledoc """
-  Implements Sieve of Eratosthenes algorithm for finding all prime numbers up to any given limit.
+  Implements Sieve of Eratosthenes algorithm for finding all prime numbers up to the given limit.
   Uses Erlang ETS to store the list of odd integers for sieving.
   """
 
   alias Primes.Helper.Sequence
 
   @doc """
-  Returns the list of the prime numbers up to the given limit. Limit must be integer larger than 1.
+  Returns the list of the prime numbers up to the given limit. Limit must be integer and larger than 1.
 
   ## Examples
 
@@ -18,45 +18,34 @@ defmodule Primes.SieveOfEratosthenes.Ets do
   def get_primes_list(limit) when limit == 2, do: [2]
 
   def get_primes_list(limit) when limit > 2 do
-    odds =
-      Sequence.get_odd(3, limit)
-      |> Enum.map(fn n -> {n, true} end)        # odd numbers are stored in the form of K/V pairs, eg: {3, true}, ..., {9, false}
+    odds = Sequence.get_odd(3, limit)
+    odds_kv = Enum.map(odds, fn n -> {n, :prime} end)        # list of K/V pairs to insert them into ETS table
 
     ets = :ets.new(:numbers, [:ordered_set])
-    :ets.insert(ets, odds)
+    :ets.insert(ets, odds_kv)
 
-    sieve(ets, :ets.first(ets), limit)
+    sieve(ets, odds, limit)
   end
 
 
-  # Sieving: end of ETS table reached, get all numbers
-  defp sieve(ets, :end_of_table, _limit),             do: get_primes(ets)
+  # Sieving: all primes already found, no need to look furhter
+  defp sieve(ets, [h | _], limit) when h * h > limit, do: get_primes(ets, :ets.first(ets), [2])
 
-  # Sieving: end of sequence reached - one of the alg. optimizations
-  defp sieve(ets, num, limit) when num * num > limit, do: get_primes(ets)
+  # Check if the next odd number can be found as an ETS key.
+  # If found - it's a prime number and we need to remove all multiples of this prime from ETS.
+  defp sieve(ets, [h | t], limit) do
+    if :ets.member(ets, h), do: delete_composite(ets, h, limit)
 
-  # Sieving: if current number is prime, ie not marked as false/composite on previous steps,
-  # than mark all numbers staring from the prime number square with increments of 2*num as false/composites
-  # and continue sieving with the next number from the ETS
-  defp sieve(ets, num, limit) do
-    [{ ^num, is_prime }] = :ets.lookup(ets, num)
-    if is_prime, do: mark_composite(ets, num, limit)
-
-    sieve(ets, :ets.next(ets, num), limit)
+    sieve(ets, t, limit)
   end
 
 
-  defp mark_composite(ets, num, limit) do
+  defp delete_composite(ets, num, limit) do
     Sequence.get(num * num, limit, 2 * num)
-    |> Enum.each(fn n ->
-        true = :ets.update_element(ets, n, {2, false})
-      end)
+    |> Enum.each(fn n -> true = :ets.delete(ets, n) end)
   end
 
 
-  defp get_primes(ets) do
-    primes = :ets.foldr(fn({num, is_prime}, acc) -> if is_prime, do: [num | acc], else: acc end, [], ets)
-
-    [2 | primes]
-  end
+  defp get_primes(_, :"$end_of_table", primes), do: Enum.reverse(primes)
+  defp get_primes(ets, key, primes),            do: get_primes(ets, :ets.next(ets, key), [key | primes])
 end

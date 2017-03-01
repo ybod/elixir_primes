@@ -15,9 +15,10 @@ Inspired by the **Exercism** task [Nth Prime in Elixir](http://exercism.io/exerc
 * `sieve_of_eratosthenes_array.ex` [Erlang array](http://erlang.org/doc/man/array.html)
 
 * `sieve_of_eratosthenes_ets.ex` [Erlang ETS](http://erlang.org/doc/man/ets.html)
+> This implementation inserts the sequence of odd integers into ETS as list of K/V pairs: [{3, :prime}, {5, :prime}, {7, :prime}, {9, :prime} ...]. Than odd numbers processed sequentially starting from 3, the first odd prime, and for each prime its multiples (composite numbers) removed from the ETS. On the final step we form a list of all ETS keys and return them as a list of a prime numbers.
 
 * `sieve_of_eratosthenes_map.ex` [Elixir Map](https://hexdocs.pm/elixir/Map.html#content)
-> This implementation encodes the sequence of odd integers as Map : %{3 => :prime, 5 => :prime, 7 => :prime ...}. Than odd numbers processed sequentially starting from 3, the first odd prime, and for each prime its multiples (composite numbers) removed from the Map.
+> This implementation encodes the sequence of odd integers as Map: %{3 => :prime, 5 => :prime, 7 => :prime, 9 => :prime, ...}. Than odd numbers processed sequentially starting from 3, the first odd prime, and for each prime its multiples (composite numbers) removed from the Map. On the final step we get a list of all Map keys and return them as a sorted list of a prime numbers.
 
 * `sieve_of_eratosthenes_mapset.ex` [Elixir MapSet](https://hexdocs.pm/elixir/MapSet.html#content)
 
