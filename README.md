@@ -25,6 +25,13 @@ Inspired by the **Exercism** task [Nth Prime in Elixir](http://exercism.io/exerc
 > This implementation starts with a set containing 2 and all odd integers. Then odd numbers processed sequentially starting from 3, the first odd prime, and for each prime its multiples (composite numbers) removed from the set. On the final step we transform everything that left in a set into a sorted list of all prime numbers.
 
 
+* `sieve_of_eratosthenes_list.ex` [Elixir List](https://hexdocs.pm/elixir/List.html#content)
+> This implementation starts with a list of odd numbers, iterating it element by element, moving primes from head to another list and deleting composite numbers from the list tail. The next iterations goes with the tail from the previous one.
+
+*Because List implementation is VERY SLOW it's excluded from the comparison with others*
+
+
+
 ## Description
 
 To get the list of the prime numbers up to the given Upper Limit use:

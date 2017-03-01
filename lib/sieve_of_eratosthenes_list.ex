@@ -1,15 +1,13 @@
 defmodule Primes.SieveOfEratosthenes.List do
   @moduledoc """
-  Implement Sieve of Eratosthenes algorithm for finding all prime numbers up to any given limit.
-  Uses MapSet to store the list of integers for sieving.
+  Implements Sieve of Eratosthenes algorithm for finding all prime numbers up to the given limit.
+  Uses Elixir List to store the list of integers for sieving.
   """
 
   alias Primes.Helper.Sequence
 
   @doc """
-  Returns the list of the prime numbers up to the given limit.
-  Limit must be integer larger than 1.
-
+  Returns the list of the prime numbers up to the given limit. Limit must be integer and larger than 1.
   ## Examples
 
      iex> Primes.SieveOfEratosthenes.List.get_primes_list(10)
@@ -20,19 +18,18 @@ defmodule Primes.SieveOfEratosthenes.List do
   def get_primes_list(limit) when limit == 2, do: [2]
 
   def get_primes_list(limit) when limit > 2 do
-    Sequence.get_odd(3, limit)
-    |> sieve(limit, [2])
+    list = Sequence.get_odd(3, limit)
+
+    sieve(list, limit, [2])
   end
 
-  # Sieving: limit reached, get all numbers that are left in the set - this numbers is primes
-  defp sieve([], _, primes_list),  do: Enum.reverse(primes_list)
-  defp sieve([p], _, primes_list), do: Enum.reverse([p | primes_list])
+  # Sieving: all primes already found, no need to look furhter
+  defp sieve([p], limit, primes), do: Enum.reverse([p | primes])
 
-  # Sieving: check if the next prime candidate integer is in set,
-  # if it is - than remove all composites for this prime
-  defp sieve([h | t], limit, primes_list) do
-    new_integers_list = t --  Sequence.get(h * h, limit, 2 * h)   # remove composite numbers for the current prime (h) from the rest of the list (t)
-
-    sieve(new_integers_list, limit, [h | primes_list])
+  # Sieving: get next prime from the head ot the list and remove all composite numbers from the tail
+  defp sieve([h | t], limit, primes) do
+    new_list = t -- Sequence.get(h * h, limit, 2 * h)
+    
+    sieve(new_list, limit, [h | primes])
   end
 end

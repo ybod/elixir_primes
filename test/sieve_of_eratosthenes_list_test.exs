@@ -25,13 +25,4 @@ defmodule Primes.SieveOfEratosthenes.List.Test do
 
     assert(calculated_primes == thousand_primes)
   end
-
-  # @tag timeout: 90_000
-  # @tag :slow
-  # test "First million of primes", %{million_primes_max: million_primes_max, million_primes: million_primes}
-  # do
-  #   calculated_primes = Primes.SieveOfEratosthenes.List.get_primes_list(million_primes_max)
-  #
-  #   assert(calculated_primes == million_primes)
-  # end
 end
